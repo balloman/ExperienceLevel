@@ -108,9 +108,26 @@ namespace ExperienceLevel
             private set => _gameTypes = value;
         }
 
+        /// <summary>
+        /// Represents essentially just an enum for the mastery tiers
+        /// </summary>
         public class MasteryTier
         {
-            private
+            private MasteryTier(string value)
+            {
+                Value = value;
+            }
+            
+            public string Value { get; set; }
+            
+            public static MasteryTier Unranked => new MasteryTier("Unranked");
+            public static MasteryTier Bronze => new MasteryTier("Bronze");
+            public static MasteryTier Silver => new MasteryTier("Silver");
+            public static MasteryTier Gold => new MasteryTier("Gold");
+            public static MasteryTier Platinum => new MasteryTier("Platinum");
+            public static MasteryTier Diamond => new MasteryTier("Diamond");
+            public static MasteryTier Master => new MasteryTier("Master");
+            public static MasteryTier Challenger => new MasteryTier("Challenger");
         }
 
         public class NotInstantiatedException:Exception

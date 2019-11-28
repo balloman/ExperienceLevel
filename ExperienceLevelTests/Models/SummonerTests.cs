@@ -29,7 +29,6 @@ namespace ExperienceLevelTests.Models
         [TestInitialize]
         public void CreateNewSummoner()
         {
-            WebIo.ApiKey = "RGAPI-fe9cd0f8-9629-418c-b527-f981b4515a32";
             _summoner = Summoner.FromJson(WebIo.GetSummonerString("pentacalc"));
         }
 

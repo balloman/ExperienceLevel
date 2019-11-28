@@ -30,7 +30,6 @@ namespace ExperienceLevelTests
         [TestInitialize]
         public void GrabData()
         {
-            WebIo.ApiKey = "RGAPI-fe9cd0f8-9629-418c-b527-f981b4515a32";
             _summonerString = WebIo.GetSummonerString("pentacalc");
         }
 

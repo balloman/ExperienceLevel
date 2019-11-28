@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using ExperienceLevel.Models;
@@ -9,39 +10,39 @@ using Newtonsoft.Json;
 
 namespace ExperienceLevel
 {
-    public class WebIo
+    public static class WebIo
     {
-        private const int Success = 200;
-        public static string ApiKey = string.Empty;
         private static HttpClient _client;
 
         private static HttpClient InitializeClient()
         {
+            var apiKey = GetApiKey();
             _client = new HttpClient
             {
                 BaseAddress = new Uri("https://na1.api.riotgames.com/lol/")
             };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            if (string.IsNullOrEmpty(ApiKey))
+            if (string.IsNullOrEmpty(apiKey))
             {
                 throw new KeyNotSetException();
             }
-            _client.DefaultRequestHeaders.Add("X-Riot-Token", ApiKey);
+            _client.DefaultRequestHeaders.Add("X-Riot-Token", GetApiKey());
             return _client;
         }
 
         public static string GetSummonerString(string summonerName)
         {
+            var apiKey = GetApiKey();
             _client = new HttpClient
             {
                 BaseAddress = new Uri("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/")
             };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            if (string.IsNullOrEmpty(ApiKey))
+            if (string.IsNullOrEmpty(apiKey))
             {
                 throw new KeyNotSetException();
             }
-            _client.DefaultRequestHeaders.Add("X-Riot-Token", ApiKey);
+            _client.DefaultRequestHeaders.Add("X-Riot-Token", apiKey);
             var response = _client.GetAsync(summonerName).Result;
             var responseString = string.Empty;
             if (response.IsSuccessStatusCode)
@@ -72,7 +73,22 @@ namespace ExperienceLevel
             return responseString;
         }
 
-        public class KeyNotSetException : Exception
+        private static string GetApiKey()
+        {
+            const string path = "apikey.txt";
+            var key = string.Empty;
+            using (var streamReader = File.OpenText(path))
+            {
+                string s;
+                while ((s = streamReader.ReadLine()) != null)
+                {
+                    key += s;
+                }
+            }
+            return key;
+        }
+        
+        private class KeyNotSetException : Exception
         {
             public KeyNotSetException()
             {

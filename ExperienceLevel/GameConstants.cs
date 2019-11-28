@@ -148,6 +148,24 @@ namespace ExperienceLevel
             }
         }
 
+        public class ConstantNotFoundException : Exception
+        {
+            public ConstantNotFoundException()
+            {
+                Console.Error.WriteLine("The specified constant was not found...");
+            }
+
+            public ConstantNotFoundException(string message) : base(message)
+            {
+                Console.Error.WriteLine("The specified constant " + message + " was not found");
+            }
+
+            public ConstantNotFoundException(string message, Exception innerException) : base(message, innerException)
+            {
+                Console.Error.WriteLine("The specified constant " + message + " was not found");
+            }
+        }
+        
         public struct QueueDt
         {
             public int QueueId { get; set; }
@@ -157,7 +175,7 @@ namespace ExperienceLevel
         }
         public struct SeasonDt
         {
-            public string Id { get; set; }
+            public int Id { get; set; }
             public string Season { get; set; }
         }
         public struct MapDt

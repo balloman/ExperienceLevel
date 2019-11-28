@@ -9,4 +9,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="apikey.txt" />
+    <Content Include="apikey.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

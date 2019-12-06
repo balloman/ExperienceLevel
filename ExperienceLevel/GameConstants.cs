@@ -118,7 +118,7 @@ namespace ExperienceLevel
                 Value = value;
             }
             
-            public string Value { get; set; }
+            public string Value { get; }
 
             public static MasteryTier BuildFromString(string val)
             {
@@ -151,15 +151,40 @@ namespace ExperienceLevel
             public static MasteryTier Challenger => new MasteryTier("Challenger");
         }
 
-        //Participant's calculated role
+        /// <summary>
+        /// Participant's calculated role
+        /// </summary>
         public class Role
         {
-            public string Value { get; set; }
+            public string Value { get; }
+            
             private Role(string value)
             {
                 Value = value;
             }
+            public static Role BuildFromString(string val)
+            {
+                var valid = new[]
+                {
+                    "DUO",
+                    "NONE",
+                    "SOLO",
+                    "DUO_CARRY",
+                    "DUO_SUPPORT"
+                };
+                if (valid.All(s => !string.Equals(s, val, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    throw new InvalidEnumArgumentException(val + " role does not exist...");
+                }
+
+                return new Role(val);
+            }
             
+            public static Role Duo => new Role("DUO");
+            public static Role None => new Role("NONE");
+            public static Role Solo => new Role("SOLO");
+            public static Role DuoCarry => new Role("DUO_CARRY");
+            public static Role DuoSupport => new Role("DUO_SUPPORT");
         }
         
         public class ConstantNotFoundException : Exception

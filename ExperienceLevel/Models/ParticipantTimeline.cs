@@ -32,11 +32,7 @@ namespace ExperienceLevel.Models
         /// Experience change for a specified period.
         /// </summary>
         public Dictionary<string, double> XpPerMinDeltas { get; set; }
-        /// <summary>
-        /// Participant's calculated role.<para></para>
-        /// Legal Values: DUO, NONE, SOLO, DUO_CARRY, DUO_SUPPORT
-        /// </summary>
-        public string Role { get; set; }
+        private GameConstants.Role _role;
         /// <summary>
         /// Damage taken difference versus the calculated lane opponent(s) for a specified period.
         /// </summary>
@@ -45,5 +41,15 @@ namespace ExperienceLevel.Models
         /// Damage taken for a specified period.
         /// </summary>
         public Dictionary<string, double> DamageTakenPerMinDeltas { get; set; }
+        
+        /// <summary>
+        /// Participant's calculated role.<para></para>
+        /// Legal Values: DUO, NONE, SOLO, DUO_CARRY, DUO_SUPPORT
+        /// </summary>
+        public string Role
+        {
+            get => _role.Value;
+            set => _role = GameConstants.Role.BuildFromString(value);
+        }
     }
 }

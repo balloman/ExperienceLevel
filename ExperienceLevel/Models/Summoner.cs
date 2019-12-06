@@ -27,12 +27,10 @@ namespace ExperienceLevel.Models
             return JsonConvert.DeserializeObject<Summoner>(jsonString);
         }
 
-        public List<Match> MatchList(HashSet<Champion> champions = null, HashSet<int> queue = null, long endTime = 0,
+        public MatchList MatchList(HashSet<Champion> champions = null, HashSet<int> queue = null, long endTime = 0,
             long beginTime = 0, int endIndex = 0, int beginIndex = 0)
         {
-            var list = JsonConvert.DeserializeObject<MatchList>(WebIo.GetMatchListString(AccountId, champions, queue,
-                endTime, beginTime, endIndex, beginIndex));
-            return list.Matches;
+            return JsonConvert.DeserializeObject<MatchList>(WebIo.GetMatchListString(AccountId));
         }
     }
 }

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace ExperienceLevel.Models
 {
@@ -98,6 +99,11 @@ namespace ExperienceLevel.Models
                     throw new GameConstants.ConstantNotFoundException(value);
                 _gameType = value;
             }
+        }
+
+        public static Match FromJson(string json)
+        {
+            return JsonConvert.DeserializeObject<Match>(json);
         }
     }
 }

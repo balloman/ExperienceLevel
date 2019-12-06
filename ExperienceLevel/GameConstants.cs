@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -10,7 +12,7 @@ namespace ExperienceLevel
 {
     public static class GameConstants
     {
-        public static bool Instanced { get; private set; } = false;
+        private static bool _instanced = false;
         private static List<SeasonDt> _seasons;
         private static List<QueueDt> _queues;
         private static List<MapDt> _maps;
@@ -21,7 +23,7 @@ namespace ExperienceLevel
         /// Should attempt to lookup the jsons for all of the types<para></para>
         /// If not called, attempts to lookup any of the values will result in a <exception cref="NotInstantiatedException"></exception>
         /// </summary>
-        public static void LookupLists()
+        private static void LookupLists()
         {
             var client = new HttpClient {BaseAddress = new Uri("http://static.developer.riotgames.com/docs/lol/")};
             Queues = JsonConvert.DeserializeObject<List<QueueDt>>(client.GetAsync("queues.json").Result.Content.ReadAsStringAsync().Result);
@@ -29,20 +31,21 @@ namespace ExperienceLevel
             Maps = JsonConvert.DeserializeObject<List<MapDt>>(client.GetAsync("maps.json").Result.Content.ReadAsStringAsync().Result);
             GameModes = JsonConvert.DeserializeObject<List<GameModeDt>>(client.GetAsync("gameModes.json").Result.Content.ReadAsStringAsync().Result);
             GameTypes = JsonConvert.DeserializeObject<List<GameTypeDt>>(client.GetAsync("gameTypes.json").Result.Content.ReadAsStringAsync().Result);
-            Instanced = true;
+            _instanced = true;
             client.Dispose();
         }
 
         public static List<SeasonDt> Seasons
         {
             get {
-                if (Instanced)
+                if (_instanced)
                 {
                     return _seasons;
                 }
                 else
                 {
-                    throw new NotInstantiatedException();
+                    LookupLists();
+                    return _seasons;
                 }
             }
             private set => _seasons = value;
@@ -51,13 +54,14 @@ namespace ExperienceLevel
         {
             get
             {
-                if (Instanced)
+                if (_instanced)
                 {
                     return _queues;
                 }
                 else
                 {
-                    throw new NotInstantiatedException();
+                    LookupLists();
+                    return _queues;
                 }
             }
             private set => _queues = value;
@@ -66,14 +70,13 @@ namespace ExperienceLevel
         {
             get
             {
-                if (Instanced)
+                if (_instanced)
                 {
                     return _maps;
                 }
-                else
-                {
-                    throw new NotInstantiatedException();
-                }
+
+                LookupLists();
+                return _maps;
             }
             private set => _maps = value;
         }
@@ -81,14 +84,13 @@ namespace ExperienceLevel
         {
             get
             {
-                if (Instanced)
+                if (_instanced)
                 {
                     return _gameModes;
                 }
-                else
-                {
-                    throw new NotInstantiatedException();
-                }
+
+                LookupLists();
+                return _gameModes;
             }
             private set => _gameModes = value;
         }
@@ -96,14 +98,12 @@ namespace ExperienceLevel
         {
             get
             {
-                if (Instanced)
+                if (_instanced)
                 {
                     return _gameTypes;
                 }
-                else
-                {
-                    throw new NotInstantiatedException();
-                }
+                LookupLists();
+                return _gameTypes;
             }
             private set => _gameTypes = value;
         }
@@ -119,6 +119,27 @@ namespace ExperienceLevel
             }
             
             public string Value { get; set; }
+
+            public static MasteryTier BuildFromString(string val)
+            {
+                var valid = new[]
+                {
+                    "Unranked",
+                    "Bronze",
+                    "Silver",
+                    "Gold",
+                    "Platinum",
+                    "Diamond",
+                    "Master",
+                    "Challenger"
+                };
+                if (valid.All(s => !string.Equals(s, val, StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    throw new InvalidEnumArgumentException(val + " tier does not exist...");
+                }
+
+                return new MasteryTier(val);
+            }
             
             public static MasteryTier Unranked => new MasteryTier("Unranked");
             public static MasteryTier Bronze => new MasteryTier("Bronze");
@@ -130,24 +151,17 @@ namespace ExperienceLevel
             public static MasteryTier Challenger => new MasteryTier("Challenger");
         }
 
-        public class NotInstantiatedException:Exception
+        //Participant's calculated role
+        public class Role
         {
-            public NotInstantiatedException()
+            public string Value { get; set; }
+            private Role(string value)
             {
-                Console.Error.WriteLine("You must make a successful call to LookupLists before attempting to use this!");
+                Value = value;
             }
-
-            public NotInstantiatedException(string message) : base(message)
-            {
-                Console.Error.WriteLine("You must make a successful call to LookupLists before attempting to use this!");
-            }
-
-            public NotInstantiatedException(string message, Exception innerException) : base(message, innerException)
-            {
-                Console.Error.WriteLine("You must make a successful call to LookupLists before attempting to use this!");
-            }
+            
         }
-
+        
         public class ConstantNotFoundException : Exception
         {
             public ConstantNotFoundException()

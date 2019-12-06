@@ -1,5 +1,6 @@
 ﻿// Bernard Allotey 11-26-2019
 
+using System.Linq;
 using ExperienceLevel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -9,22 +10,12 @@ namespace ExperienceLevelTests
     public class GameConstantsTests
     {
         [TestMethod]
-        public void EnsureCallingWithoutInstanceThrows()
-        {
-            Assert.ThrowsException<GameConstants.NotInstantiatedException>(() => GameConstants.Queues);
-        }
-
-        [TestMethod]
         public void EnsureCorrectRetrievalOfSeasons()
         {
-            GameConstants.LookupLists();
             var seasons = GameConstants.Seasons;
-            foreach (var seasonDt in seasons)
+            if (seasons.Any(seasonDt => seasonDt.Season == "PRESEASON 3"))
             {
-                if (seasonDt.Season == "PRESEASON 3")
-                {
-                    return;
-                }
+                return;
             }
             Assert.Fail("Did not find Preseason 3...");
         }

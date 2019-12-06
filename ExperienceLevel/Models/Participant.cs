@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ExperienceLevel.Models
 {
@@ -31,7 +32,7 @@ namespace ExperienceLevel.Models
         /// Not included for matches played with Runes Reforged
         /// </summary>
         public List<Mastery> Masteries { get; set; }
-        private string _highestAchievedSeasonTier;
+        private GameConstants.MasteryTier _highestAchievedSeasonTier;
         /// <summary>
         /// First summoner spell id
         /// </summary>
@@ -43,19 +44,28 @@ namespace ExperienceLevel.Models
             get => _teamId;
             set
             {
-                if (_teamId != 100 && _teamId != 200)
-                    throw new InvalidOperationException("Team id must be either 100 or 200");
+                if (value != 100 && value != 200)
+                    throw new InvalidOperationException("Team id: " + value + " must be either 100 or 200");
                 _teamId = value;
             }
         }
 
         public string HighestAchievedSeasonTier
         {
-            get
+            get => _highestAchievedSeasonTier.Value;
+            set
             {
-                
+                try
+                {
+                    _highestAchievedSeasonTier = GameConstants.MasteryTier.BuildFromString(value);
+                }
+                catch (InvalidEnumArgumentException e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
-            set { throw new NotImplementedException(); }
         }
+        
     }
 }

@@ -53,13 +53,13 @@ namespace ExperienceLevel
             return responseString;
         }
 
-        public static string GetMatchListString(string summonerId, HashSet<Champion> champions = null, HashSet<int> queue = null,
+        public static string GetMatchListString(string accountId, HashSet<Champion> champions = null, HashSet<int> queue = null,
             long endTime = 0,
             long beginTime = 0, int endIndex = 0, int beginIndex = 0)
         {
             _client = InitializeClient();
             //TODO Somehow make this so that it actually can handle the parameters
-            var response = _client.GetAsync("match/v4/matchlists/by-account/" + summonerId).Result;
+            var response = _client.GetAsync("match/v4/matchlists/by-account/" + accountId).Result;
             string responseString;
             if (response.IsSuccessStatusCode)
             {
@@ -71,6 +71,25 @@ namespace ExperienceLevel
             }
             _client.Dispose();
             return responseString;
+        }
+
+        /// <summary>
+        /// Gets a match from the RIOT Api using a matchId
+        /// </summary>
+        /// <param name="matchId">The game id to search for</param>
+        /// <returns>A string that</returns>
+        public static string GetMatchString(long matchId)
+        {
+            _client = InitializeClient();
+            var response = _client.GetAsync("match/v4/matches/" + matchId).Result;
+            string responseString;
+            if (response.IsSuccessStatusCode)
+            {
+                _client.Dispose();
+                return response.Content.ReadAsStringAsync().Result;
+            }
+            _client.Dispose();
+            throw new HttpRequestException("Error Code: " + response.StatusCode);
         }
 
         private static string GetApiKey()

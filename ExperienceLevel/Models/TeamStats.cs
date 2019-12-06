@@ -75,9 +75,9 @@ namespace ExperienceLevel.Models
             get => _teamId;
             set
             {
-                if (_teamId != 100 && _teamId != 200)
+                if (value != 100 && value != 200)
                 {
-                    throw new InvalidOperationException("Team Id can only be 100 or 200");
+                    throw new InvalidOperationException("Team Id: " + value + " can only be 100 or 200");
                 }
                 else
                 {

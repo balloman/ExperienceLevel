@@ -19,6 +19,9 @@ mono_crash.*
 #Api key stuff
 apikey.txt
 
+#Testing stuffin
+TestFiles/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

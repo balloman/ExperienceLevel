@@ -18,6 +18,7 @@ namespace ExperienceLevel
         private static List<MapDt> _maps;
         private static List<GameModeDt> _gameModes;
         private static List<GameTypeDt> _gameTypes;
+        private static string _gameVersion;
 
         /// <summary>
         /// Should attempt to lookup the jsons for all of the types<para></para>
@@ -106,6 +107,21 @@ namespace ExperienceLevel
                 return _gameTypes;
             }
             private set => _gameTypes = value;
+        }
+
+        /// <summary>
+        /// Returns the current game version
+        /// </summary>
+        public static string GameVersion
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(_gameVersion)) return _gameVersion;
+                
+                var versions = JsonConvert.DeserializeObject<List<string>>(WebIo.GetVersionsString());
+                _gameVersion = versions[0];
+                return _gameVersion;
+            }
         }
 
         /// <summary>

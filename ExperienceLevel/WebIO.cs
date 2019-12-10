@@ -14,12 +14,12 @@ namespace ExperienceLevel
     {
         private static HttpClient _client;
 
-        private static HttpClient InitializeClient()
+        private static HttpClient InitializeClient(string baseUrl="https://na1.api.riotgames.com/lol/")
         {
             var apiKey = GetApiKey();
             _client = new HttpClient
             {
-                BaseAddress = new Uri("https://na1.api.riotgames.com/lol/")
+                BaseAddress = new Uri(baseUrl)
             };
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             if (string.IsNullOrEmpty(apiKey))
@@ -82,7 +82,6 @@ namespace ExperienceLevel
         {
             _client = InitializeClient();
             var response = _client.GetAsync("match/v4/matches/" + matchId).Result;
-            string responseString;
             if (response.IsSuccessStatusCode)
             {
                 _client.Dispose();
@@ -92,6 +91,10 @@ namespace ExperienceLevel
             throw new HttpRequestException("Error Code: " + response.StatusCode);
         }
 
+        /// <summary>
+        /// Just retrieves the api key from apikey.txt
+        /// </summary>
+        /// <returns>The API key</returns>
         private static string GetApiKey()
         {
             const string path = "apikey.txt";
@@ -105,6 +108,42 @@ namespace ExperienceLevel
                 }
             }
             return key;
+        }
+
+        /// <summary>
+        /// Gets the version list
+        /// </summary>
+        /// <returns>The version list</returns>
+        /// <exception cref="HttpRequestException">thrown if we don't get a success status code</exception>
+        public static string GetVersionsString()
+        {
+            _client = InitializeClient("https://ddragon.leagueoflegends.com/api/");
+            var response = _client.GetAsync("versions.json").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                _client.Dispose();
+                return response.Content.ReadAsStringAsync().Result;
+            }
+            _client.Dispose();
+            throw new HttpRequestException("Error Code: " + response.StatusCode);
+        }
+
+        /// <summary>
+        /// Gets the list of champions
+        /// </summary>
+        /// <param name="version">The version to check</param>
+        /// <returns>The list of champs</returns>
+        public static string GetChampionsString(string version)
+        {
+            _client = InitializeClient("http://ddragon.leagueoflegends.com/cdn/9.23.1/data/en_US/");
+            var response = _client.GetAsync("champion.json").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                _client.Dispose();
+                return response.Content.ReadAsStringAsync().Result;
+            }
+            _client.Dispose();
+            throw new HttpRequestException("Error code: " + response.StatusCode);
         }
         
         private class KeyNotSetException : Exception

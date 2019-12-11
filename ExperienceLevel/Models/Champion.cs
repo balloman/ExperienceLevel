@@ -8,7 +8,7 @@ namespace ExperienceLevel.Models
 {
     public class Champion
     {
-        private static List<Champion> _champions;
+        private static Dictionary<string, Champion> _champions;
         
         public string Version { get; set; }
         public string Id { get; set; }
@@ -22,12 +22,13 @@ namespace ExperienceLevel.Models
         public string ParType { get; set; }
         public StatsDt Stats { get; set; }
 
-        private static List<Champion> RetrieveChamps()
+        private static Dictionary<string, Champion> RetrieveChamps()
         {
-            return JsonConvert.DeserializeObject<List<Champion>>(WebIo.GetChampionsString(GameConstants.GameVersion));
+            return JsonConvert
+                .DeserializeObject<ChampionListReference>(WebIo.GetChampionsString(GameConstants.GameVersion)).Data;
         }
 
-        public static List<Champion> Champions
+        public static Dictionary<string, Champion> Champions
         {
             get
             {
@@ -78,6 +79,14 @@ namespace ExperienceLevel.Models
             public double AttackDamagePerLevel { get; set; }
             public double AttackSpeedPerLevel { get; set; }
             public double AttackSpeed { get; set; }
+        }
+
+        public struct ChampionListReference
+        {
+            public string Type { get; set; }
+            public string Format { get; set; }
+            public string Version { get; set; }
+            public Dictionary<string, Champion> Data { get; set; }
         }
     }
 }

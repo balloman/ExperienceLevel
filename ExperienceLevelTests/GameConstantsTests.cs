@@ -19,12 +19,5 @@ namespace ExperienceLevelTests
             }
             Assert.Fail("Did not find Preseason 3...");
         }
-
-        [TestMethod]
-        public void EnsureCorrectVersion()
-        {
-            var version = GameConstants.GameVersion;
-            Assert.AreEqual(version, "lolpatch_3.7");
-        }
     }
 }

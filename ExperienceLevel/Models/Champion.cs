@@ -32,8 +32,9 @@ namespace ExperienceLevel.Models
         {
             get
             {
-                if (_champions.Count < 1)
-                    _champions = RetrieveChamps();
+                if (_champions != null)
+                    return _champions;
+                _champions = RetrieveChamps();
                 return _champions;
             }
         }

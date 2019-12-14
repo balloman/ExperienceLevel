@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace ExperienceLevel.Models
 {
+    /// <summary>
+    /// Represents the data given to you if you request a matchlist from RIOT
+    /// </summary>
     public struct MatchList
     {
         public List<MatchReference> Matches { get; set; }

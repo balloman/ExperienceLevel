@@ -2,10 +2,11 @@
 
 namespace ExperienceLevel.Models
 {
+    //An individual MatchReference, which isnt the same as a match
     public struct MatchReference
     {
         public string Lane { get; set; }
-        public long GameId { get; set; }
+        public long GameId { get; set; } //This one is important as it allows us to lookup a game using the game id
         public int Champion { get; set; }
         public string PlatformId { get; set; }
         public int Season { get; set; }

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using ExperienceLevel.Models;
@@ -53,13 +54,58 @@ namespace ExperienceLevel
             return responseString;
         }
 
-        public static string GetMatchListString(string accountId, HashSet<Champion> champions = null, HashSet<int> queue = null,
+        public static string GetMatchListString(string accountId, List<Champion> champions = null, 
+            List<int> queues = null,
             long endTime = 0,
             long beginTime = 0, int endIndex = 0, int beginIndex = 0)
         {
             _client = InitializeClient();
-            //TODO Somehow make this so that it actually can handle the parameters
-            var response = _client.GetAsync("match/v4/matchlists/by-account/" + accountId).Result;
+            var champEndpoint = "";
+            if (champions != null)
+            {
+                champEndpoint = "champion=" + champions[0].Key;
+                var i = 0;
+                foreach (var champion in champions)
+                {
+                    if (i == 0)
+                    {
+                        i++;
+                        continue;
+                    }
+                    champEndpoint += "&champion=" + champion.Key;
+                }
+            }
+
+            var queueEndpoint = "";
+            if (queues != null)
+            {
+                queueEndpoint = "queue=" + queues[0];
+                var i = 0;
+                foreach (var queue in queues)
+                {
+                    if (i == 0)
+                    {
+                        i++;
+                        continue;
+                    }
+                    queueEndpoint += "&queue=" + queue;
+                }
+            }
+
+            var endTimeEndpoint = endTime == 0 ? "" : "&endTime=" + endTime;
+            var beginTimeEndpoint = beginTime == 0 ? "" : "&beginTime=" + beginTime;
+            var endIndexEndpoint = endIndex == 0 ? "" : "&endIndex=" + endIndex;
+            var beginIndexEndpoint = beginIndex == 0 ? "" : "&beginIndex=" + beginIndex;
+            var endPoint = "match/v4/matchlists/by-account/" + accountId
+                                                             + "?"
+                                                             + champEndpoint
+                                                             + "&"
+                                                             + queueEndpoint
+                                                             + endTimeEndpoint
+                                                             + beginTimeEndpoint
+                                                             + endIndexEndpoint
+                                                             + beginIndexEndpoint;
+            var response = _client.GetAsync(endPoint).Result;
             string responseString;
             if (response.IsSuccessStatusCode)
             {
@@ -67,7 +113,7 @@ namespace ExperienceLevel
             }
             else
             {
-                throw new HttpRequestException("Error Code: " + response.StatusCode);
+                throw new HttpRequestException("Error Code: " + response.StatusCode + "\n " + endPoint);
             }
             _client.Dispose();
             return responseString;
@@ -81,6 +127,8 @@ namespace ExperienceLevel
         public static string GetMatchString(long matchId)
         {
             _client = InitializeClient();
+            //THe first argument is the url to make the request to, and it does this synchronously so you have to wait
+            //for it
             var response = _client.GetAsync("match/v4/matches/" + matchId).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -88,7 +136,8 @@ namespace ExperienceLevel
                 return response.Content.ReadAsStringAsync().Result;
             }
             _client.Dispose();
-            throw new HttpRequestException("Error Code: " + response.StatusCode);
+            throw new HttpRequestException("Error Code: " + response.StatusCode); //If we get a 404 or something
+            //This will throw
         }
 
         /// <summary>
@@ -145,7 +194,7 @@ namespace ExperienceLevel
             _client.Dispose();
             throw new HttpRequestException("Error code: " + response.StatusCode);
         }
-        
+
         private class KeyNotSetException : Exception
         {
             public KeyNotSetException()

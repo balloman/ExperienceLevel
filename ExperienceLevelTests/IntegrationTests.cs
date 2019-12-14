@@ -22,5 +22,15 @@ namespace ExperienceLevelTests
             Assert.IsTrue(matches.Matches.Any(reference => reference.GameId == 3158645188));
             
         }
+
+        [TestMethod]
+        public void EnsureSpecificMatchHistory()
+        {
+            var summoner = Summoner.FromJson(WebIo.GetSummonerString("pentacalc"));
+            var matches = JsonConvert.DeserializeObject<MatchList>(WebIo.GetMatchListString(summoner.AccountId,
+                new List<Champion> {Champion.GetChampionByKey(3)},
+                new List<int> {420, 400, 430, 440}));
+            Assert.IsTrue(matches.Matches.Any(reference => reference.Champion == 3));
+        }
     }
 }

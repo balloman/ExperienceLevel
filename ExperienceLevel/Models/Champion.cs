@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace ExperienceLevel.Models
@@ -37,6 +38,15 @@ namespace ExperienceLevel.Models
                 _champions = RetrieveChamps();
                 return _champions;
             }
+        }
+
+        public static Champion GetChampionByKey(int key)
+        {
+            foreach (var champion in Champions.Where(champion => int.Parse(champion.Value.Key) == key))
+            {
+                return champion.Value;
+            }
+            throw new KeyNotFoundException(key.ToString());
         }
         
         public struct InfoDt

@@ -184,7 +184,7 @@ namespace ExperienceLevel
         /// <returns>The list of champs</returns>
         public static string GetChampionsString(string version)
         {
-            _client = InitializeClient("http://ddragon.leagueoflegends.com/cdn/9.23.1/data/en_US/");
+            _client = InitializeClient("http://ddragon.leagueoflegends.com/cdn/" + version + "/data/en_US/");
             var response = _client.GetAsync("champion.json").Result;
             if (response.IsSuccessStatusCode)
             {

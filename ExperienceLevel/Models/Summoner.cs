@@ -1,8 +1,6 @@
 ﻿// Bernard Allotey 11-25-2019
 
-using System;
 using System.Collections.Generic;
-using System.Net.Http;
 using Newtonsoft.Json;
 
 namespace ExperienceLevel.Models
@@ -30,7 +28,7 @@ namespace ExperienceLevel.Models
         public MatchList MatchList(HashSet<Champion> champions = null, HashSet<int> queue = null, long endTime = 0,
             long beginTime = 0, int endIndex = 0, int beginIndex = 0)
         {
-            return JsonConvert.DeserializeObject<MatchList>(WebIo.GetMatchListString(AccountId));
+            return JsonConvert.DeserializeObject<MatchList>(GeneralIo.GetMatchListString(AccountId));
         }
     }
 }

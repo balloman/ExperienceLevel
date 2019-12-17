@@ -16,10 +16,10 @@ namespace ExperienceLevelTests.Models
         [TestInitialize]
         public void AssignMatch()
         {
-            var matchList = MatchList.FromJson(WebIo.GetMatchListString(Summoner.FromJson(
-                WebIo.GetSummonerString("pentacalc")).AccountId));
+            var matchList = MatchList.FromJson(GeneralIo.GetMatchListString(Summoner.FromJson(
+                GeneralIo.GetSummonerString("pentacalc")).AccountId));
             var matchReference = matchList.Matches.Find(reference => reference.GameId == 3158645188);
-            _match = Match.FromJson(WebIo.GetMatchString(matchReference.GameId));
+            _match = Match.FromJson(GeneralIo.GetMatchString(matchReference.GameId));
         }
         
         [TestMethod]

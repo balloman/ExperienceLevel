@@ -5,14 +5,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using Newtonsoft.Json;
 
 namespace ExperienceLevel
 {
     public static class GameConstants
     {
-        private static bool _instanced = false;
+        private static bool _instanced;
         private static List<SeasonDt> _seasons;
         private static List<QueueDt> _queues;
         private static List<MapDt> _maps;
@@ -43,11 +42,9 @@ namespace ExperienceLevel
                 {
                     return _seasons;
                 }
-                else
-                {
-                    LookupLists();
-                    return _seasons;
-                }
+
+                LookupLists();
+                return _seasons;
             }
             private set => _seasons = value;
         }
@@ -59,11 +56,9 @@ namespace ExperienceLevel
                 {
                     return _queues;
                 }
-                else
-                {
-                    LookupLists();
-                    return _queues;
-                }
+
+                LookupLists();
+                return _queues;
             }
             private set => _queues = value;
         }
@@ -118,7 +113,7 @@ namespace ExperienceLevel
             {
                 if (!string.IsNullOrEmpty(_gameVersion)) return _gameVersion;
                 
-                var versions = JsonConvert.DeserializeObject<List<string>>(WebIo.GetVersionsString());
+                var versions = JsonConvert.DeserializeObject<List<string>>(GeneralIo.GetVersionsString());
                 _gameVersion = versions[0];
                 return _gameVersion;
             }

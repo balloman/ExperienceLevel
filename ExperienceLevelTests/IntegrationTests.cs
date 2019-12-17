@@ -15,10 +15,10 @@ namespace ExperienceLevelTests
         [TestMethod]
         public void EnsureCorrectWebLookup()
         {
-            var summoner = Summoner.FromJson(WebIo.GetSummonerString("pentacalc"));
+            var summoner = Summoner.FromJson(GeneralIo.GetSummonerString("pentacalc"));
             Assert.AreEqual("pentacalc", summoner.Name);
             Assert.AreEqual(13, summoner.SummonerLevel);
-            var matches = JsonConvert.DeserializeObject<MatchList>(WebIo.GetMatchListString(summoner.AccountId));
+            var matches = JsonConvert.DeserializeObject<MatchList>(GeneralIo.GetMatchListString(summoner.AccountId));
             Assert.IsTrue(matches.Matches.Any(reference => reference.GameId == 3158645188));
             
         }
@@ -26,8 +26,8 @@ namespace ExperienceLevelTests
         [TestMethod]
         public void EnsureSpecificMatchHistory()
         {
-            var summoner = Summoner.FromJson(WebIo.GetSummonerString("pentacalc"));
-            var matches = JsonConvert.DeserializeObject<MatchList>(WebIo.GetMatchListString(summoner.AccountId,
+            var summoner = Summoner.FromJson(GeneralIo.GetSummonerString("pentacalc"));
+            var matches = JsonConvert.DeserializeObject<MatchList>(GeneralIo.GetMatchListString(summoner.AccountId,
                 new List<Champion> {Champion.GetChampionByKey(3)},
                 new List<int> {420, 400, 430, 440}));
             Assert.IsTrue(matches.Matches.Any(reference => reference.Champion == 3));

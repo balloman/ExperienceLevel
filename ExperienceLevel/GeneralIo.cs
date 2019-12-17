@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using ExperienceLevel.Models;
@@ -11,9 +10,50 @@ using Newtonsoft.Json;
 
 namespace ExperienceLevel
 {
-    public static class WebIo
+    public static class GeneralIo
     {
         private static HttpClient _client;
+        private static List<Summoner> _summoners = new List<Summoner>();
+        private const string SummonerPath = "summoners.plys";
+
+        private static List<Summoner> Summoners
+        {
+            get
+            {
+                if (_summoners.Count >= 1) return _summoners;
+                if (!File.Exists(SummonerPath))
+                {
+                    File.Create(SummonerPath).Close();
+                }
+                using (var streamReader = File.OpenText(SummonerPath))
+                {
+                    string s;
+                    while ((s = streamReader.ReadLine()) != null)
+                    {
+                        _summoners.Add(JsonConvert.DeserializeObject<Summoner>(s));
+                    }
+                }
+                return _summoners;
+            }
+        }
+
+        public static Summoner RetrieveSummoner(string summonerName)
+        {
+            var summoner = Summoners.Find(summoner1 => 
+                string.Equals(summoner1.Name, summonerName, StringComparison.CurrentCultureIgnoreCase));
+            if (summoner != null)
+            {
+                return summoner;
+            }
+
+            summoner = Summoner.FromJson(GetSummonerString(summonerName));
+            Summoners.Add(summoner);
+            using (var streamWriter = File.AppendText(SummonerPath))
+            {
+                streamWriter.WriteLine(JsonConvert.SerializeObject(summoner));
+            }
+            return summoner;
+        }
 
         private static HttpClient InitializeClient(string baseUrl="https://na1.api.riotgames.com/lol/")
         {

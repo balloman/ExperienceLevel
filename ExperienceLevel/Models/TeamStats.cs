@@ -79,10 +79,8 @@ namespace ExperienceLevel.Models
                 {
                     throw new InvalidOperationException("Team Id: " + value + " can only be 100 or 200");
                 }
-                else
-                {
-                    _teamId = value;
-                }
+
+                _teamId = value;
             }
         }
 

@@ -1,6 +1,5 @@
 ﻿// Bernard Allotey 11-25-2019
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -26,7 +25,7 @@ namespace ExperienceLevel.Models
         private static Dictionary<string, Champion> RetrieveChamps()
         {
             return JsonConvert
-                .DeserializeObject<ChampionListReference>(WebIo.GetChampionsString(GameConstants.GameVersion)).Data;
+                .DeserializeObject<ChampionListReference>(GeneralIo.GetChampionsString(GameConstants.GameVersion)).Data;
         }
 
         public static Dictionary<string, Champion> Champions

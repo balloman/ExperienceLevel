@@ -29,7 +29,7 @@ namespace ExperienceLevelTests.Models
         [TestInitialize]
         public void CreateNewSummoner()
         {
-            _summoner = Summoner.FromJson(WebIo.GetSummonerString("pentacalc"));
+            _summoner = Summoner.FromJson(GeneralIo.GetSummonerString("pentacalc"));
         }
 
         [TestMethod]
